@@ -1,21 +1,32 @@
 const express = require("express");
-
 const app= express();
+const cors= require('cors');
 
-app.use("/test",(req,res)=>{
-    res.send("dshgfjysdgcfhdbvg");
-});
+app.use(cors());
 
-app.use((req,res)=>{
-    res.send("as soon as possible")
 
-});
+app.use("/user",
+    (req,res,next)=>{
+        console.log("Handling the router 1");
+        next();
+    res.send("response1");
+    
+},
 
-app.use((req,res)=>{
-    res.send("sdufgudscgvhmdbcvjhyydgd");
-});
+(req,res,next) => {
+    console.log("hanndling the router2");
+    res.send("response2")
+    next();
+},
+
+(req,res) => {
+    res.send("reponse3");
+}
+
+);
+
 
 app.listen(3000,()=>{
-    console.log("server is sucessfully  on port777");
+    console.log("server is   on port777");
 
 });
