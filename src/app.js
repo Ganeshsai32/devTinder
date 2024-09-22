@@ -1,32 +1,43 @@
 const express = require("express");
+const connectDB = require("./config/database");
 const app= express();
+const User = require("./models/user");
 const cors= require('cors');
-
 app.use(cors());
 
 
-app.use("/user",
-    (req,res,next)=>{
-        console.log("Handling the router 1");
-        next();
-    res.send("response1");
-    
-},
 
-(req,res,next) => {
-    console.log("hanndling the router2");
-    res.send("response2")
-    next();
-},
+app.post("/signup", async (req,res)=>{
+    const user = new User({
+        firstName: "Ganesh",
+        lastName: "sai",
+        emailId: "ganeshsai.com",
+        passWord:"ganesh@123",
+    });
 
-(req,res) => {
-    res.send("reponse3");
-}
-
-);
-
-
-app.listen(3000,()=>{
-    console.log("server is   on port777");
-
+    await user.save();
+    res.send("use added sucessfully");
 });
+
+
+connectDB()
+.then(() => {
+    console.log("databse connection established");
+    app.listen(3000,() => {
+        console.log("server is   on port777");
+    
+    });
+   
+})
+
+
+.catch((err) => {
+       console.error("database cannot be established");
+});
+
+
+
+
+
+
+
