@@ -16,6 +16,6 @@ app.use((req,res)=>{
 });
 
 app.listen(3000,()=>{
-    console.log("server is sucessfully listenting on port777");
+    console.log("server is sucessfully  on port777");
 
 });
