@@ -2,18 +2,15 @@ const express = require("express");
 const connectDB = require("./config/database");
 const app= express();
 const User = require("./models/user");
+app.use(express.json());
+
 const cors= require('cors');
 app.use(cors());
 
 
 
 app.post("/signup", async (req,res)=>{
-    const user = new User({
-        firstName: "Ganesh",
-        lastName: "sai",
-        emailId: "ganeshsai.com",
-        passWord:"ganesh@123",
-    });
+    const user = new User(req.body);
 
     await user.save();
     res.send("use added sucessfully");
