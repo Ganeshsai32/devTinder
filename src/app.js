@@ -2,6 +2,8 @@ const express = require("express");
 const connectDB = require("./config/database");
 const app= express();
 const User = require("./models/user");
+const {validateSignUpData} = require ("./utils/validation");
+
 app.use(express.json());
 
 const cors= require('cors');
@@ -10,14 +12,17 @@ app.use(cors());
 
 app.post("/signup", async (req,res)=>{
 
+    try {
+    validateSignUpData(req);
+
     const user= new User (req.body);
 
-    try {
+    
         await user.save();
         res.send("user data sucessfully");
     }
     catch(err){
-        res.status(400).send("Error saving the user :" + err.message);
+        res.status(600).send("Error :" + err.message);
     }
 
 });
@@ -66,6 +71,33 @@ app.delete("/user",async (req,res)=>{
 });
 
 
+
+
+app.patch("/user/:userId",async (req,res)=>{
+    const userId= req.params?.userId;
+    const data= req.body; 
+    try{
+        const ALLOWED_UPDATES = ["userId","gender","age","passWord","firstName","lastName","emailId"];
+        const isUpdateAllowed = Object.keys(data).every((k) =>
+            ALLOWED_UPDATES.includes(k)
+             );
+             if(!isUpdateAllowed){
+               throw new Error("update not allowed");
+             }
+     
+    const user =   await User.findByIdAndUpdate({_id:userId},data,{
+        returnDocument:"after",
+        runValidators:true,
+    });
+    res.send("user data sucessfully");
+     }
+     catch(err){
+        res.status(400).send("something went wrong");
+  
+     }
+
+
+});
 
 connectDB()
 .then(() => {
